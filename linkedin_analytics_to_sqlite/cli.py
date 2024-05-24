@@ -1,6 +1,7 @@
 import click
 from openpyxl import load_workbook
 from sqlite_utils import Database
+from dateutil.parser import parse
 
 
 @click.group()
@@ -82,12 +83,16 @@ def process(xlsx_path, db_path):
     # print(parse_engagement(wb["DEMOGRAPHICS"]))
 
 
+def parse_date(date_string):
+    return parse(date_string).strftime("%Y-%m-%d")
+
+
 def parse_engagement(sheet):
     engagement_dates = []
     for row in sheet.iter_rows(min_row=2, max_col=3, max_row=1000, values_only=True):
         engagement_dates.append(
             {
-                "date": row[0],
+                "date": parse_date(row[0]),
                 "impressions": row[1],
                 "engagements": row[2],
             }
@@ -97,13 +102,14 @@ def parse_engagement(sheet):
 
 def parse_followers(sheet):
     follower_dates = []
-    for row in sheet.iter_rows(min_row=2, max_col=3, max_row=1000, values_only=True):
-        follower_dates.append(
-            {
-                "date": row[0],
-                "new_followers": row[1],
-            }
-        )
+    for row in sheet.iter_rows(min_row=4, max_col=3, max_row=1000, values_only=True):
+        if row[0]:
+            follower_dates.append(
+                {
+                    "date": parse_date(row[0]),
+                    "new_followers": row[1],
+                }
+            )
     return follower_dates
 
 
@@ -133,7 +139,7 @@ def parse_top_posts(sheet):
     ):
         top_posts[row[0]] = {
             "post_url": row[0],
-            "publish_date": row[1],
+            "publish_date": parse_date(row[1]),
             "impressions": row[2],
             "engagements": 0,
         }
