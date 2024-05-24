@@ -1,0 +1,29 @@
+[tool.poetry]
+name = "linkedin-analytics-to-sqlite"
+version = "0.0.1"
+description = "Parse the LinkedIn analytics exports into a Sqlite DB"
+authors = ["Philip James <phildini@phildini.net>"]
+license = "Apache 2.0"
+repository = "https://github.com/phildini/linkedin-analytics-to-sqlite"
+readme = "README.md"
+keywords = ["linkedin", "analytics", "sqlite"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+sqlite-utils = "^3.36"
+openpyxl = "^3.1.2"
+click = "^8.1.7"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.1"
+ruff = "^0.4.4"
+
+[tool.poetry.group.datasette.dependencies]
+datasette = "^0.64.6"
+
+[tool.poetry.scripts]
+linkedin-analytics-to-sqlite = "linkedin_analytics_to_sqlite.cli:cli"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
